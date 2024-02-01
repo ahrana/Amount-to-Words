@@ -1,0 +1,177 @@
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amount to Words Converter</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-DO8YW0HRD2WuoR8+w5YVRqkx/QZRUtDdXM8X1yojNjD01BjBmMsP+t5wW+hOILXc" crossorigin="anonymous">
+<style>
+    body {
+        background-color: #e3e3e3;
+        font-family: 'Roboto', sans-serif;
+    }
+    .container {
+        margin-top: 50px;
+    }
+    .card {
+        background-color: #233142;
+        color: #e3e3e3;
+    }
+    .card-header {
+        background-color: #455d7a;
+        border-bottom: 2px solid #b80257;
+    }
+    .card-body {
+        padding: 20px;
+    }
+    .form-control {
+        border-color: #f95959;
+    }
+    .btn-primary {
+        background-color: #b80257;
+        border-color: #b80257;
+    }
+    .btn-primary:hover {
+        background-color: #f95959;
+        border-color: #f95959;
+    }
+    /* Floating Developer Credit */
+    .developer-credit {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        animation: floatDeveloper 5s ease-in-out infinite alternate;
+    }
+    @keyframes floatDeveloper {
+        0% {
+            transform: translateY(0);
+        }
+        100% {
+            transform: translateY(-10px);
+        }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Amount to Words Converter | United Arab Emirates
+</h4>
+                </div>
+                <div class="card-body">
+                    <form id="converterForm">
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Enter Amount in AED</label>
+                            <input type="number" class="form-control" id="amount" placeholder="Enter amount">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="convertToWords()">Convert</button>
+                    </form>
+                    <div class="mt-3">
+                        <h5>Amount in Words:</h5>
+                        <p id="amountInWords"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Developer Credit -->
+<div class="developer-credit">
+    Designed by Anowar Hossain Rana with ♡ <i class="fas fa-heart" style="color: red;"></i>
+</div>
+<script>
+    function convertToWords() {
+        var number = document.getElementById("amount").value;
+        var dirhams = Math.floor(number);
+        var fils = Math.round((number - dirhams) * 100);
+        var dirhamsWords = numberToWords(dirhams);
+        var filsWords = numberToWords(fils);
+        var result = dirhamsWords + " Dirhams";
+        if (number === '10') {
+            result = "Ten Dirhams";
+        } else if (dirhams === 10 && fils === 10) {
+            result = "Ten Dirhams and Ten Fils";
+        } else if (fils !== 0) {
+            result += " and " + filsWords + " Fils";
+        }
+        document.getElementById("amountInWords").innerText = result + " Only";
+    }
+
+    function numberToWords(number) {
+        // Conversion logic for number to words
+        // Implement your own logic or use a library
+        // This is a simplified version for demonstration purposes
+        // Replace it with a more comprehensive solution for your use case
+
+        var ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+        var tens = ['', 'Ten', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+        var teens = ['', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        var groups = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
+
+        if (number === 0) {
+            return 'Zero';
+        }
+
+        var numStr = number.toString();
+
+        // Pad with zeros to ensure length is a multiple of 3
+        while (numStr.length % 3 !== 0) {
+            numStr = '0' + numStr;
+        }
+
+        var numGroups = Math.ceil(numStr.length / 3);
+        var result = '';
+
+        for (var i = 0; i < numGroups; i++) {
+            var chunk = numStr.substr(-3 * (i + 1), 3);
+            var chunkInt = parseInt(chunk, 10);
+
+            if (chunkInt !== 0) {
+                var chunkWords = '';
+
+                // Extract hundreds place
+                var hundreds = Math.floor(chunkInt / 100);
+                if (hundreds !== 0) {
+                    chunkWords += ones[hundreds] + ' Hundred ';
+                }
+
+                // Extract tens and ones places
+                var remainder = chunkInt % 100;
+                if (remainder !== 0) {
+                    if (remainder < 10) {
+                        chunkWords += ones[remainder];
+                    } else if (remainder < 20) {
+                        chunkWords += teens[remainder - 10];
+                    } else {
+                        var tensPlace = Math.floor(remainder / 10);
+                        var onesPlace = remainder % 10;
+                        chunkWords += tens[tensPlace];
+                        if (onesPlace !== 0) {
+                            chunkWords += ' ' + ones[onesPlace];
+                        }
+                    }
+                }
+
+                // Add group name
+                chunkWords += ' ' + groups[i];
+
+                // Add space before next group
+                if (result !== '') {
+                    result = ' ' + result;
+                }
+
+                // Append chunk to result
+                result = chunkWords + result;
+            }
+        }
+
+        return result.trim();
+    }
+</script>
+</body>
